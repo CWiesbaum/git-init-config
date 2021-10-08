@@ -1,0 +1,143 @@
+#!/bin/bash
+
+# git-init-config: Script creating a standard git configuration
+# Copyright (C) 2014  Carsten Wiesbaum <carsten.wiesbaum@esentri.com>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Date: 2014/02/11
+
+# Init constants
+readonly GITCONFIG='git config'
+readonly GLOBAL='--global'
+
+# print_help function
+function print_help {
+  echo "Usage: $0 [OPTION]"
+  echo
+  echo "Creates a basic git configuration for current git project."
+  echo "The command has to be executed in initialised git repository."
+  echo "For global configuration use option --global"
+  echo
+  echo "Included in configuration:"
+  echo "User name and email"
+  echo "Standard editor"
+  echo "Activate UI color"
+  echo "Create some git aliases"
+  echo
+  echo "Options:"
+  echo "--help		print this help"
+  echo "--global	apply to global configuration"
+  echo "--license	print GNU GPL license information"
+}
+
+# print_license function
+function print_license {
+  echo "git-init-config: Script creating a standard git configuration"
+  echo "Copyright (C) 2014  Carsten Wiesbaum <carsten.wiesbaum@esentri.com>"
+  echo
+  echo "This program is free software: you can redistribute it and/or modify"
+  echo "it under the terms of the GNU General Public License as published by"
+  echo "the Free Software Foundation, either version 2 of the License, or"
+  echo "(at your option) any later version."
+  echo
+  echo "This program is distributed in the hope that it will be useful,"
+  echo "but WITHOUT ANY WARRANTY; without even the implied warranty of"
+  echo "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
+  echo "GNU General Public License for more details."
+  echo
+  echo "You should have received a copy of the GNU General Public License"
+  echo "along with this program.  If not, see <http://www.gnu.org/licenses/>."
+}
+
+# Check parameters function
+function check_args {
+  if [ $# -gt 1 ]
+  then
+    print_help
+    exit 1
+  fi
+
+  case "$1" in
+    "--global") ;;
+    "--help") print_help
+              exit 0;;
+    "--license") print_license
+                 exit 0;;
+    * ) print_help
+        exit 2
+  esac
+}
+
+if [ $# -gt 0 ]
+then
+  check_args "$@"
+fi
+
+# Set --global option if required
+if [ "$1" == "--global" ]
+then
+  GITCONFIGCMD="$GITCONFIG $GLOBAL"
+else
+  GITCONFIGCMD=$GITCONFIG
+fi
+
+echo "git-init-config"
+echo "Copyright (C) 2014  Carsten Wiesbaum <carsten.wiesbaum@esentri.com>"
+
+echo "This program comes with ABSOLUTELY NO WARRANTY."
+echo "This is free software, and you are welcome to redistribute it"
+echo "under certain conditions; use option --license for details."
+echo
+echo
+
+# Read Username
+echo -n "Please enter your name: "
+read username
+
+echo -n "Please enter your email: "
+read email
+
+echo -n "Please enter your preferred editor: "
+read editor
+
+# Starting configuration
+echo "Configuring user.name..."
+$GITCONFIGCMD user.name "$username"
+
+echo "Configuring user.email..."
+$GITCONFIGCMD user.email $email
+
+echo "Configuring core.editor..."
+$GITCONFIGCMD core.editor $editor
+
+echo "Configuring color.ui..."
+$GITCONFIGCMD color.ui true
+
+echo "Configuring aliases:"
+echo "s = git status"
+$GITCONFIGCMD alias.s status
+
+echo "au = git add -u && git status"
+$GITCONFIGCMD alias.au '!git add -u && git status'
+
+echo "spull = git svn rebase"
+$GITCONFIGCMD alias.spull 'svn rebase'
+
+echo "spush = git svn dcommit"
+$GITCONFIGCMD alias.spush 'svn dcommit'
+
+echo "Done..."
+
+exit 0
