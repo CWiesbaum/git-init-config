@@ -102,7 +102,7 @@ echo "under certain conditions; use option --license for details."
 echo
 echo
 
-# Read Username
+# Read user input
 echo -n "Please enter your name: "
 read username
 
@@ -111,6 +111,9 @@ read email
 
 echo -n "Please enter your preferred editor: "
 read editor
+
+echo -n "Please enter your deautl branch name: "
+read defaultBranchName
 
 # Starting configuration
 echo "Configuring user.name..."
@@ -121,6 +124,9 @@ $GITCONFIGCMD user.email $email
 
 echo "Configuring core.editor..."
 $GITCONFIGCMD core.editor $editor
+
+echo "Configuring init.defaultBranch..."
+$GITCONFIGCMD init.defaultBranch $defaultBranchName
 
 echo "Configuring color.ui..."
 $GITCONFIGCMD color.ui true
