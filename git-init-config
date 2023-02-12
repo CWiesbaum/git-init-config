@@ -112,7 +112,7 @@ read email
 echo -n "Please enter your preferred editor: "
 read editor
 
-echo -n "Please enter your deautl branch name: "
+echo -n "Please enter your deault branch name: "
 read defaultBranchName
 
 # Starting configuration
